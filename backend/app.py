@@ -17,7 +17,7 @@ MAX_HISTORY_ITEMS = 20  # Limit history size to prevent memory issues
 PROJECT_DIR = r'C:\FYP\FYP2_work\runs'
 
 # Load model
-model = YOLO(r"C:\Users\sxlau\Downloads\260501.pt")
+model = YOLO(r"..\model\260501.pt")
 
 # In-memory storage for history (cleared when server restarts)
 prediction_history = deque(maxlen=MAX_HISTORY_ITEMS)
