@@ -1,0 +1,5 @@
+# Ignore all YOLO model files by default
+*.pt
+# Remove the above line if you want to commit your YOLO model file
+# Change the model file name below as appropriate for your project
+# Example: 260501.pt 

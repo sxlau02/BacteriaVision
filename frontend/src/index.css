@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 60% 98%;   /* #f7fafc */
+    --foreground: 222 47% 11%;   /* #1a202c */
+    --card: 207 48% 95%;         /* #e3f2fd */
+    --card-foreground: 222 47% 11%;
+    --primary: 217 66% 40%;      /* #225ea8 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 197 73% 43%;    /* #1d91c0 */
+    --secondary-foreground: 0 0% 100%;
+    --accent: 187 52% 51%;       /* #41b6c4 */
+    --accent-foreground: 222 47% 11%;
+    --muted: 210 60% 98%;        /* #f7fafc - match background */
+    --muted-foreground: 222 47% 11%;
+    --border: 210 40% 96%;        /* #f3f6fa - very light, subtle border */
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+.microscope-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230a6e6e' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 5px rgba(10, 110, 110, 0)); }
+  50% { filter: drop-shadow(0 0 8px rgba(10, 110, 110, 0.6)); }
+}
+
+@keyframes bacteria-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-bacteria-spin {
+  animation: bacteria-spin 8s linear infinite;
+}
+
+.bg-gradient-animate {
+  background: linear-gradient(-45deg, #0a6e6e, #39b6b6, #5cc2c2, #0a6e6e);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* Enhanced card hover effects */
+.card-hover-effect {
+  @apply transition-all duration-300;
+}
+
+.card-hover-effect:hover {
+  @apply transform shadow-lg -translate-y-1;
+  box-shadow: 0 10px 25px -5px rgba(10, 110, 110, 0.1), 0 10px 10px -5px rgba(10, 110, 110, 0.04);
+}
