@@ -31,6 +31,8 @@ import { toast } from "sonner";
 // Import type definitions
 import { PredictionResponse } from "@/types";
 
+import TIFF from 'tiff.js';
+
 /**
  * Props interface for the ImageUpload component
  * @property onPredictionComplete - Callback function that receives the prediction results and input image
@@ -57,6 +59,10 @@ const ImageUpload = ({ onPredictionComplete }: ImageUploadProps) => {
 
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [tiffPreviewUrl, setTiffPreviewUrl] = useState<string | null>(null);
+  const [tiffError, setTiffError] = useState<string | null>(null);
+  const [tiffLoading, setTiffLoading] = useState<boolean>(false);
 
   /**
    * Converts a File object to a base64 string
@@ -109,6 +115,39 @@ const ImageUpload = ({ onPredictionComplete }: ImageUploadProps) => {
     };
   }, [previewUrl]);
 
+  const isTiffFile = selectedFile && (selectedFile.type === 'image/tiff' || selectedFile.name.toLowerCase().endsWith('.tif') || selectedFile.name.toLowerCase().endsWith('.tiff'));
+
+  useEffect(() => {
+    if (isTiffFile && selectedFile) {
+      setTiffError(null);
+      setTiffPreviewUrl(null);
+      setTiffLoading(true);
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      fetch('http://localhost:5000/convert-tiff', {
+        method: 'POST',
+        body: formData,
+      })
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to convert TIFF');
+          return res.blob();
+        })
+        .then(blob => {
+          setTiffPreviewUrl(URL.createObjectURL(blob));
+          setTiffLoading(false);
+        })
+        .catch(err => {
+          setTiffError('Preview not supported for this TIFF file, but you can still analyze it.');
+          setTiffLoading(false);
+          console.error('TIFF backend convert error:', err);
+        });
+    } else {
+      setTiffPreviewUrl(null);
+      setTiffError(null);
+      setTiffLoading(false);
+    }
+  }, [isTiffFile, selectedFile]);
+
   /**
    * Handles the upload and analysis process
    * Sends the image to the model service and processes the results
@@ -118,20 +157,37 @@ const ImageUpload = ({ onPredictionComplete }: ImageUploadProps) => {
 
     setIsUploading(true);
     try {
-      // Convert file to base64
-      const base64 = await fileToBase64(selectedFile);
-      
+      let fileForAnalysis = selectedFile;
+
+      // If TIFF, convert to JPEG first
+      if (isTiffFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        const response = await fetch('http://localhost:5000/convert-tiff', {
+          method: 'POST',
+          body: formData,
+        });
+        if (response.ok) {
+          const jpegBlob = await response.blob();
+          fileForAnalysis = new File([jpegBlob], selectedFile.name.replace(/\.(tif|tiff)$/i, '.jpg'), { type: 'image/jpeg' });
+        } else {
+          toast.error("Failed to convert TIFF for analysis.");
+          setIsUploading(false);
+          return;
+        }
+      }
+
+      // Convert file to base64 for history (optional)
+      const base64 = await fileToBase64(fileForAnalysis);
+
       // Send to model service
-      const result = await modelService.predict(selectedFile);
-      
-      // Update preview if a new image is uploaded
+      const result = await modelService.predict(fileForAnalysis);
+
       if (result) {
-        // Revoke old preview URL if it exists
         if (previewUrl) {
           URL.revokeObjectURL(previewUrl);
         }
-        // Create new preview URL for the selected file
-        const newPreviewUrl = URL.createObjectURL(selectedFile);
+        const newPreviewUrl = URL.createObjectURL(fileForAnalysis);
         setPreviewUrl(newPreviewUrl);
         onPredictionComplete(result, base64);
       }
@@ -190,13 +246,31 @@ const ImageUpload = ({ onPredictionComplete }: ImageUploadProps) => {
           {/* Image preview or placeholder */}
           <div className="mt-4 flex flex-col items-center">
             <span className="text-xs text-muted-foreground mb-1">Input Preview</span>
-            {previewUrl ? (
+            {selectedFile ? (
               <div className="relative w-72 h-48">
-                <img
-                  src={previewUrl}
-                  alt="Input preview"
-                  className="w-full h-full object-contain rounded border border-border bg-muted"
-                />
+                {isTiffFile ? (
+                  tiffLoading ? (
+                    <div className="flex flex-col items-center justify-center h-full w-full bg-muted rounded-md border border-dashed border-gray-300">
+                      <span className="text-muted-foreground text-center">Loading TIFF preview...</span>
+                    </div>
+                  ) : tiffPreviewUrl ? (
+                    <img
+                      src={tiffPreviewUrl}
+                      alt="TIFF preview"
+                      className="w-full h-full object-contain rounded border border-border bg-muted"
+                    />
+                  ) : tiffError ? (
+                    <div className="flex flex-col items-center justify-center h-full w-full bg-muted rounded-md border border-dashed border-gray-300">
+                      <span className="text-muted-foreground text-center">{tiffError}</span>
+                    </div>
+                  ) : null
+                ) : (
+                  <img
+                    src={previewUrl!}
+                    alt="Input preview"
+                    className="w-full h-full object-contain rounded border border-border bg-muted"
+                  />
+                )}
                 <button
                   type="button"
                   onClick={handleRemoveImage}

@@ -1,88 +1,179 @@
 # BacteriaVision
 
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue)](https://github.com/sxlau02/BacteriaVision)
+
 A modern web platform for automated analysis of bacteria in Palm Oil Mill Effluent (POME) using deep learning and scientific visualization.
 
----
-
 ## 🚀 Features
-- **AI-Powered Detection:** Analyze SEM images for bacterial families using YOLO.
-- **Interactive Results:** Annotated images, class distribution charts, and detailed stats.
-- **Analysis History:** Review, compare, and revisit past analyses.
-- **Professional UI:** Clean, responsive React + Tailwind interface.
+
+- **AI-Powered Detection:** Analyze SEM images for bacterial families using YOLO
+- **Interactive Results:** Annotated images, class distribution charts, and detailed stats
+- **Analysis History:** Review, compare, and revisit past analyses
+- **Professional UI:** Clean, responsive React + Tailwind interface
+- **Real-time Processing:** Fast and efficient image analysis
+- **Data Export:** Export analysis results and statistics
 
 ## 🛠 Tech Stack
-- **Backend:** Python, Flask, YOLO, OpenCV, NumPy
-- **Frontend:** React, TypeScript, Tailwind CSS, Shadcn UI, Recharts
+
+### Backend
+- Python 3.8+
+- Flask 3.0.2
+- YOLO (Ultralytics) 8.1.28
+- OpenCV 4.9.0
+- NumPy 1.26.4
+- Gunicorn 21.2.0
+
+### Frontend
+- React 18.2.0
+- TypeScript 5.3.3
+- Vite 5.1.3
+- Tailwind CSS 3.4.1
+- Shadcn UI Components
+- React Query
+- Recharts
 
 ## ⚡ Quickstart
 
-### Backend
+### Prerequisites
+- Python 3.8 or higher
+- Node.js 18 or higher
+- npm or yarn
+- Git
+
+### Backend Setup
 ```bash
-# (If not already created)
-conda create -n FYP python=3.8
-conda activate FYP
+# Clone the repository
+git clone https://github.com/sxlau02/BacteriaVision
+cd BacteriaVision
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
-conda install flask numpy opencv
-pip install ultralytics
+cd backend
+pip install -r requirements.txt
 
-# Place your YOLO model file (e.g., 260501.pt) in backend/model/
-# NOTE: Change the model file name in app.py as appropriate for your use case.
+# Create .env file
+echo "PROJECT_DIR=./runs" > .env
+echo "MODEL_PATH=./model/260501.pt" >> .env
+
+# Place your YOLO model file (260501.pt) in backend/model/
 
 # Start the backend server
-cd backend
 python app.py
 ```
 
-### Frontend
+### Frontend Setup
 ```bash
+# In a new terminal
 cd frontend
+
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
 ```
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
+The application will be available at:
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000
 
 ## 🖼 Usage
-1. **Upload** a SEM image of POME.
-2. **Analyze**: The AI model detects and classifies bacteria.
-3. **Review**: See annotated results, class stats, and processing time.
-4. **History**: Browse and compare previous analyses.
+
+1. **Upload Image**
+   - Click the upload button or drag and drop a SEM image
+   - Supported formats: JPG, PNG, TIFF
+
+2. **Analysis**
+   - The AI model automatically processes the image
+   - View real-time progress and processing time
+
+3. **Results**
+   - View annotated image with detected bacteria
+   - Check class distribution and statistics
+   - Export results if needed
+
+4. **History**
+   - Access previous analyses
+   - Compare results
+   - Download past reports
 
 ## 📁 Project Structure
 ```
-effluent-eye-microbe-vision/
+BacteriaVision/
 ├── backend/
 │   ├── app.py              # Flask backend
+│   ├── requirements.txt    # Python dependencies
 │   └── model/
-│       └── 260501.pt       # (Place your YOLO model here; change name as needed)
+│       └── 260501.pt      # YOLO model file
 ├── frontend/
 │   ├── src/
-│   │   ├── components/     # UI components
-│   │   ├── pages/          # Page components
-│   │   ├── services/       # API services
-│   │   ├── types/          # TypeScript types
-│   │   ├── assets/         # Images/assets
-│   │   └── ...
+│   │   ├── components/    # UI components
+│   │   ├── pages/        # Page components
+│   │   ├── services/     # API services
+│   │   ├── types/        # TypeScript types
+│   │   └── assets/       # Static assets
 │   ├── public/
-│   ├── package.json        # Node dependencies
-│   └── ...
-└── README.md               # Documentation
+│   └── package.json      # Node dependencies
+└── README.md
 ```
 
 ## 📡 API Endpoints
-- `POST /predict` – Analyze an image
-- `GET /history` – List previous analyses
-- `GET /history/<id>` – Get details for a specific analysis
+
+### Analysis
+- `POST /predict` - Analyze an image
+  - Request: Form data with image file
+  - Response: Detection results and annotated image
+
+### History
+- `GET /history` - List all analyses
+- `GET /history/<id>` - Get specific analysis
+- `POST /history/clear` - Clear history
+
+## 🔧 Development
+
+### Backend Development
+```bash
+# Run with debug mode
+python app.py
+
+# Run with gunicorn (production)
+gunicorn app:app --bind 0.0.0.0:5000
+```
+
+### Frontend Development
+```bash
+# Development
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
 
 ## 🤝 Contributing
-- Fork & branch from `main`
-- Follow code style and add comments
-- Submit a Pull Request with a clear description
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## 📄 License
-MIT License – see [LICENSE](LICENSE)
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 💬 Support
-- Open an issue on GitHub for help or bug reports 
+
+- Open an issue on GitHub for bug reports or feature requests
+- Contact the maintainers for additional support
+
+## 🙏 Acknowledgments
+
+- YOLO team for the object detection model
+- Shadcn UI for the beautiful components
+- All contributors and users of the project 

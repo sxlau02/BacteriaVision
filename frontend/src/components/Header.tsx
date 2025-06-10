@@ -53,9 +53,9 @@ const Header = () => {
         </div>
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <nav className="flex items-center">
-            <a href="#" className="hover:underline hover:text-primary transition-colors flex items-center gap-1">
+            <a href="https://github.com/sxlau02/BacteriaVision" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-primary transition-colors flex items-center gap-1">
               <Github className="h-5 w-5" />
-              GitHub{/* TODO: Add real GitHub link here */}
+              GitHub
             </a>
           </nav>
         </div>

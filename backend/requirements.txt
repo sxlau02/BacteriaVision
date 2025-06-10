@@ -1,6 +1,8 @@
-flask
-flask-cors
-ultralytics
-numpy
-opencv-python
-gunicorn
+flask==3.0.2
+flask-cors==4.0.0
+ultralytics==8.1.28
+numpy==1.26.4
+opencv-python==4.9.0.80
+gunicorn==21.2.0
+python-dotenv==1.0.1
+pillow==10.2.0

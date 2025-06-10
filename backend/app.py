@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from ultralytics import YOLO
 import numpy as np
@@ -8,16 +8,24 @@ import base64
 import time
 import os
 from collections import deque
+from pathlib import Path
+from PIL import Image
+import io
 
 app = Flask(__name__)
 CORS(app)
 
 # Configuration
 MAX_HISTORY_ITEMS = 20  # Limit history size to prevent memory issues
-PROJECT_DIR = r'C:\FYP\FYP2_work\runs'
+BASE_DIR = Path(__file__).parent
+PROJECT_DIR = os.getenv('PROJECT_DIR', str(BASE_DIR / 'runs'))
+MODEL_PATH = os.getenv('MODEL_PATH', str(BASE_DIR / 'model' / '260501.pt'))
+
+# Ensure directories exist
+os.makedirs(PROJECT_DIR, exist_ok=True)
 
 # Load model
-model = YOLO(r"..\model\260501.pt")
+model = YOLO(MODEL_PATH)
 
 # In-memory storage for history (cleared when server restarts)
 prediction_history = deque(maxlen=MAX_HISTORY_ITEMS)
@@ -114,6 +122,15 @@ def clear_history():
     # Clear the history
     prediction_history.clear()
     return jsonify({"message": "History cleared"})
+
+@app.route('/convert-tiff', methods=['POST'])
+def convert_tiff():
+    file = request.files['file']
+    img = Image.open(file.stream)
+    buf = io.BytesIO()
+    img.convert('RGB').save(buf, format='JPEG')
+    buf.seek(0)
+    return send_file(buf, mimetype='image/jpeg')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
