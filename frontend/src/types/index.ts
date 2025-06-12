@@ -24,6 +24,7 @@ export interface PredictionResponse {
   id: string;                    // Unique identifier for this prediction
   detections: Record<string, number>;  // Map of class names to their counts
   total_objects: number;         // Total number of objects detected
+  density_percentage: number;
   timing: {
     total_processing_time_ms: number;  // Time taken to process the image in milliseconds
   };
@@ -39,9 +40,10 @@ export interface HistoryItem {
   timestamp: number;             // Unix timestamp when prediction was made
   detections: Record<string, number>;  // Map of class names to their counts
   total_objects: number;         // Total number of objects detected
+  density_percentage: number;
   annotated_image_base64: string;  // Base64 encoded image with detection boxes
   input_image_base64: string;    // Base64 encoded original input image
-  processingTime?: number;
+  processingTime: number;
 }
 
 /**

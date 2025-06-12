@@ -145,6 +145,7 @@ const Index = () => {
       timestamp: Date.now(),
       detections: newPrediction.detections,
       total_objects: newPrediction.total_objects,
+      density_percentage: newPrediction.density_percentage,
       annotated_image_base64: newPrediction.annotated_image_base64,
       input_image_base64: newInputImage,
       processingTime: newPrediction.timing.total_processing_time_ms,
@@ -271,6 +272,17 @@ const Index = () => {
                                   </Badge>
                                 );
                               })}
+                            </div>
+                            <div className="mt-4">
+                              <div className="font-semibold mb-2">Sample Statistics</div>
+                              <div className="flex flex-wrap gap-2">
+                                <Badge className="bg-red-100 text-red-800 border border-red-200 px-3 py-1 rounded-full">
+                                  Estimated Density: {selectedHistory.density_percentage.toFixed(2)}%
+                                </Badge>
+                                <Badge className="bg-blue-100 text-blue-800 border border-blue-200 px-3 py-1 rounded-full">
+                                  Total Objects: {selectedHistory.total_objects}
+                                </Badge>
+                              </div>
                             </div>
                           </div>
                         </div>

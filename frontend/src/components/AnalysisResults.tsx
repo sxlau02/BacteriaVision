@@ -103,6 +103,10 @@ const AnalysisResults = ({ prediction, inputImage }: AnalysisResultsProps) => {
               <TimerIcon className="h-5 w-5 mr-2 text-blue-500" />
               Processing time: {formatProcessingTime(prediction.timing.total_processing_time_ms)}
             </span>
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-800 text-base font-semibold">
+              <Microscope className="h-5 w-5 mr-2 text-red-500" />
+              Estimated Density: {prediction.density_percentage.toFixed(2)}%
+            </span>
           </div>
         )}
       </CardHeader>

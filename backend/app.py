@@ -19,7 +19,7 @@ CORS(app)
 MAX_HISTORY_ITEMS = 20  # Limit history size to prevent memory issues
 BASE_DIR = Path(__file__).parent
 PROJECT_DIR = os.getenv('PROJECT_DIR', str(BASE_DIR / 'runs'))
-MODEL_PATH = os.getenv('MODEL_PATH', str(BASE_DIR / 'model' / '260501.pt'))
+MODEL_PATH = os.getenv('MODEL_PATH', str(BASE_DIR / 'model' / 'best.pt'))
 
 # Ensure directories exist
 os.makedirs(PROJECT_DIR, exist_ok=True)
@@ -78,12 +78,30 @@ def predict():
         for cls, count in zip(*np.unique(results[0].boxes.cls.cpu().numpy(), return_counts=True)):
             detections[names[int(cls)]] = int(count)
 
+        # Calculate density percentage
+        density = 0.0
+        if results[0].masks is not None:
+            # Calculate total image area
+            total_area = img_np.shape[0] * img_np.shape[1]
+            total_mask_area = 0
+            
+            # Sum all mask areas
+            for mask in results[0].masks.data:
+                mask_np = mask.cpu().numpy()
+                mask_resized = cv2.resize(mask_np, (img_np.shape[1], img_np.shape[0]))
+                mask_binary = (mask_resized > 0.5).astype(np.uint8)
+                total_mask_area += np.sum(mask_binary)
+            
+            # Calculate density percentage
+            density = (total_mask_area / total_area) * 100
+
         # Create history item
         history_item = {
             "id": uid,
             "timestamp": time.time(),
             "detections": detections,
             "total_objects": len(results[0].boxes),
+            "density_percentage": round(density, 2),
             "annotated_image_base64": img_base64
         }
 
@@ -94,6 +112,7 @@ def predict():
             "id": uid,
             "detections": detections,
             "total_objects": len(results[0].boxes),
+            "density_percentage": round(density, 2),
             "timing": {
                 "total_processing_time_ms": round((time.time() - start_time) * 1000, 2)
             },

@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { History as HistoryIcon, Timer as TimerIcon } from "lucide-react";
+import { History as HistoryIcon, Timer as TimerIcon, Microscope } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { HistoryItem } from "@/types";
 
@@ -41,6 +41,10 @@ const SampleHistoryCard = ({ item, idx, onViewDetails }: SampleHistoryCardProps)
           <div className="flex items-center gap-2 mb-1">
             <TimerIcon className="h-4 w-4 text-blue-500" />
             <span className="text-xs text-blue-700 font-semibold">{formatProcessingTime(item.processingTime)}</span>
+          </div>
+          <div className="flex items-center gap-2 mb-1">
+            <Microscope className="h-4 w-4 text-red-500" />
+            <span className="text-xs text-red-700 font-semibold">Estimated Density: {item.density_percentage.toFixed(2)}%</span>
           </div>
           <div className="flex items-center gap-2 mb-4">
             <span className={`inline-block w-3 h-3 rounded-full ${color.split(" ")[0]}`}></span>
