@@ -19,7 +19,7 @@ CORS(app)
 MAX_HISTORY_ITEMS = 20  # Limit history size to prevent memory issues
 BASE_DIR = Path(__file__).parent
 PROJECT_DIR = os.getenv('PROJECT_DIR', str(BASE_DIR / 'runs'))
-MODEL_PATH = os.getenv('MODEL_PATH', str(BASE_DIR / 'model' / 'best.pt'))
+MODEL_PATH = os.getenv('MODEL_PATH', str(BASE_DIR / 'model' / 'best_final.pt'))
 
 # Ensure directories exist
 os.makedirs(PROJECT_DIR, exist_ok=True)

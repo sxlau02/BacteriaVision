@@ -8,6 +8,7 @@ A modern web platform for automated analysis of bacteria in Palm Oil Mill Efflue
 
 - **AI-Powered Detection:** Analyze SEM images for bacterial families using YOLO
 - **Interactive Results:** Annotated images, class distribution charts, and detailed stats
+- **Density Analysis:** Calculate and display estimated bacterial density percentage in images
 - **Analysis History:** Review, compare, and revisit past analyses
 - **Professional UI:** Clean, responsive React + Tailwind interface
 - **Real-time Processing:** Fast and efficient image analysis
@@ -18,7 +19,7 @@ A modern web platform for automated analysis of bacteria in Palm Oil Mill Efflue
 ### Backend
 - Python 3.8+
 - Flask 3.0.2
-- YOLO (Ultralytics) 8.1.28
+- YOLO (Ultralytics) 11L-seg.pt
 - OpenCV 4.9.0
 - NumPy 1.26.4
 - Gunicorn 21.2.0
@@ -56,7 +57,7 @@ pip install -r requirements.txt
 
 # Create .env file
 echo "PROJECT_DIR=./runs" > .env
-echo "MODEL_PATH=./model/260501.pt" >> .env
+echo "MODEL_PATH=./model/best.pt" >> .env
 
 # Place your YOLO model file (260501.pt) in backend/model/
 
@@ -89,15 +90,17 @@ The application will be available at:
 2. **Analysis**
    - The AI model automatically processes the image
    - View real-time progress and processing time
+   - Get estimated bacterial density percentage
 
 3. **Results**
    - View annotated image with detected bacteria
    - Check class distribution and statistics
+   - See estimated density percentage
    - Export results if needed
 
 4. **History**
    - Access previous analyses
-   - Compare results
+   - Compare results including density measurements
    - Download past reports
 
 ## 📁 Project Structure
@@ -107,7 +110,7 @@ BacteriaVision/
 │   ├── app.py              # Flask backend
 │   ├── requirements.txt    # Python dependencies
 │   └── model/
-│       └── 260501.pt      # YOLO model file
+│       └── best.pt      # YOLO model file
 ├── frontend/
 │   ├── src/
 │   │   ├── components/    # UI components
@@ -125,7 +128,7 @@ BacteriaVision/
 ### Analysis
 - `POST /predict` - Analyze an image
   - Request: Form data with image file
-  - Response: Detection results and annotated image
+  - Response: Detection results, annotated image, and estimated density percentage
 
 ### History
 - `GET /history` - List all analyses

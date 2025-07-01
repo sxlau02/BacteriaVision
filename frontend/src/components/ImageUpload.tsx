@@ -232,7 +232,7 @@ const ImageUpload = ({ onPredictionComplete }: ImageUploadProps) => {
               id="file-upload"
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png,.tif,.tiff"
               onChange={handleFileChange}
               className="hidden"
             />
@@ -310,7 +310,8 @@ const ImageUpload = ({ onPredictionComplete }: ImageUploadProps) => {
         <div className="rounded-lg border bg-card p-4">
           <h3 className="font-semibold mb-2">Instructions</h3>
           <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-            <li>Select an image file (JPEG, PNG, TIFF, etc.)</li>
+            <li>Select an image file (JPEG, PNG, or TIFF format only)</li>
+            <li>Remove any frame or border for accurate density estimation</li>
             <li>Click Upload to analyze the image</li>
             <li>Wait for the analysis to complete</li>
             <li>View the results in the Analysis tab</li>
